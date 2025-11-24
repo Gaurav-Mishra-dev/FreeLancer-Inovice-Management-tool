@@ -1,0 +1,53 @@
+CREATE DATABASE freelancer_db;
+USE freelancer_db;
+
+CREATE TABLE clients (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE projects (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    deadline DATE,
+    client_id INT,
+    status VARCHAR(50),
+    FOREIGN KEY (client_id) REFERENCES clients(id)
+);
+
+CREATE TABLE time_entries (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    project_id INT,
+    start_time TIMESTAMP,
+    end_time TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES projects(id)
+);
+
+CREATE TABLE invoices (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    client_id INT,
+    rate DOUBLE,
+    total_amount DOUBLE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients(id)
+);
+
+CREATE TABLE invoice_entries (
+    invoice_id INT,
+    time_entry_id INT,
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id),
+    FOREIGN KEY (time_entry_id) REFERENCES time_entries(id)
+);
+
+-- sample data
+INSERT INTO clients(name, email) VALUES
+('Alpha Corp', 'alpha@example.com'),
+('Beta Ltd', 'beta@example.com');
+
+INSERT INTO projects(name, description, deadline, client_id, status) VALUES
+('Website Revamp', 'Revamp company website', '2025-03-31', 1, 'In Progress'),
+('Mobile App', 'Create Android app', '2025-06-30', 2, 'In Progress');
+
+select * from clients;
