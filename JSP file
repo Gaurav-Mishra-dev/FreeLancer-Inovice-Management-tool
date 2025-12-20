@@ -1,0 +1,163 @@
+*index.jsp*
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+</head>
+<body>
+
+<jsp:forward page="login.jsp" />
+
+</body>
+</html>
+
+*dashboard.jsp*
+
+<%
+    String role = (String) session.getAttribute("role");
+    if (role == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
+
+<h2>Welcome <%= role %></h2>
+
+<ul>
+    <li><a href="projects.jsp">Project Management</a></li>
+    <li><a href="timeEntry.jsp">Time Entry</a></li>
+    <li><a href="invoice.jsp">Invoice Generation</a></li>
+</ul>
+
+*login.jsp*
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+
+<h2>Freelancer Time Management System</h2>
+
+<form action="login" method="post">
+    <label>Select Role:</label>
+    <select name="role">
+        <option value="Freelancer">Freelancer</option>
+        <option value="Client">Client</option>
+    </select>
+    <br><br>
+    <input type="submit" value="Login">
+</form>
+
+</body>
+</html>
+
+*invoice.jsp*
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+</head>
+<body>
+
+<h2>Generate Invoice</h2>
+
+<form action="invoice" method="post">
+    Client ID: <input type="number" name="clientId" required><br><br>
+    Hourly Rate: <input type="number" name="rate" value="30" required><br><br>
+
+    <input type="submit" value="Generate Invoice">
+</form>
+
+<br>
+<a href="dashboard.jsp">Back to Dashboard</a>
+
+</body>
+</html>
+
+*project.jsp*
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projects</title>
+</head>
+<body>
+
+<h2>Add Project</h2>
+
+<form action="project" method="post">
+    Name: <input type="text" name="name" required><br><br>
+    Description: <input type="text" name="description" required><br><br>
+    Deadline (yyyy-mm-dd): <input type="text" name="deadline" required><br><br>
+    Client ID: <input type="number" name="clientId" required><br><br>
+
+    <input type="submit" value="Add Project">
+</form>
+
+<br>
+<a href="dashboard.jsp">Back to Dashboard</a>
+
+</body>
+</html>
+
+*timeEntry.jsp*
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Time Entry</title>
+</head>
+<body>
+
+<h2>Add Time Entry</h2>
+
+<form action="timeEntry" method="post">
+    Project ID: <input type="number" name="projectId" required><br><br>
+    Start (yyyy-mm-ddTHH:mm): <input type="text" name="start" required><br><br>
+    End (yyyy-mm-ddTHH:mm): <input type="text" name="end" required><br><br>
+
+    <input type="submit" value="Save Time Entry">
+</form>
+
+<br>
+<a href="dashboard.jsp">Back to Dashboard</a>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
