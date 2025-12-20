@@ -1,30 +1,51 @@
-CREATE DATABASE freelancer_db;
+-- ================================
+-- Freelancer Time Management System
+-- Complete Database Script
+-- ================================
+
+-- 1. Create Database
+CREATE DATABASE IF NOT EXISTS freelancer_db;
 USE freelancer_db;
 
+-- ================================
+-- 2. Clients Table
+-- ================================
 CREATE TABLE clients (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL
+    email VARCHAR(100) UNIQUE NOT NULL
 );
 
+-- ================================
+-- 3. Projects Table
+-- ================================
 CREATE TABLE projects (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    description TEXT,
+    description VARCHAR(255),
     deadline DATE,
     client_id INT,
     status VARCHAR(50),
     FOREIGN KEY (client_id) REFERENCES clients(id)
+        ON DELETE CASCADE
 );
 
+-- ================================
+-- 4. Time Entries Table
+-- (Column order matches DAO index)
+-- ================================
 CREATE TABLE time_entries (
     id INT PRIMARY KEY AUTO_INCREMENT,
     project_id INT,
-    start_time TIMESTAMP,
-    end_time TIMESTAMP,
+    start_time DATETIME,
+    end_time DATETIME,
     FOREIGN KEY (project_id) REFERENCES projects(id)
+        ON DELETE CASCADE
 );
 
+-- ================================
+-- 5. Invoices Table
+-- ================================
 CREATE TABLE invoices (
     id INT PRIMARY KEY AUTO_INCREMENT,
     client_id INT,
@@ -32,22 +53,47 @@ CREATE TABLE invoices (
     total_amount DOUBLE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES clients(id)
+        ON DELETE CASCADE
 );
 
+-- ================================
+-- 6. Invoice Entries (Join Table)
+-- ================================
 CREATE TABLE invoice_entries (
     invoice_id INT,
     time_entry_id INT,
-    FOREIGN KEY (invoice_id) REFERENCES invoices(id),
+    PRIMARY KEY (invoice_id, time_entry_id),
+    FOREIGN KEY (invoice_id) REFERENCES invoices(id)
+        ON DELETE CASCADE,
     FOREIGN KEY (time_entry_id) REFERENCES time_entries(id)
+        ON DELETE CASCADE
 );
 
--- sample data
-INSERT INTO clients(name, email) VALUES
-('Alpha Corp', 'alpha@example.com'),
-('Beta Ltd', 'beta@example.com');
+-- ================================
+-- 7. Sample Data (For Testing)
+-- ================================
 
-INSERT INTO projects(name, description, deadline, client_id, status) VALUES
-('Website Revamp', 'Revamp company website', '2025-03-31', 1, 'In Progress'),
-('Mobile App', 'Create Android app', '2025-06-30', 2, 'In Progress');
+-- Clients
+INSERT INTO clients (name, email) VALUES
+('ABC Corp', 'abc@corp.com'),
+('XYZ Ltd', 'xyz@ltd.com');
 
-select * from clients;
+-- Projects
+INSERT INTO projects (name, description, deadline, client_id, status) VALUES
+('Website Development', 'Company website', '2025-12-31', 1, 'In Progress'),
+('Mobile App', 'Android Application', '2025-11-30', 2, 'In Progress');
+
+-- Time Entries
+INSERT INTO time_entries (project_id, start_time, end_time) VALUES
+(1, '2025-01-20 10:00:00', '2025-01-20 13:00:00'),
+(1, '2025-01-21 09:00:00', '2025-01-21 12:00:00'),
+(2, '2025-01-22 11:00:00', '2025-01-22 14:00:00');
+
+-- ================================
+-- 8. Verification Queries
+-- ================================
+SELECT * FROM clients;
+SELECT * FROM projects;
+SELECT * FROM time_entries;
+SELECT * FROM invoices;
+SELECT * FROM invoice_entries;
